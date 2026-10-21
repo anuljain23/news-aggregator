@@ -29,7 +29,7 @@ tap.test('POST /users/signup with missing email', async (t) => {
     t.end();
 });
 
-// tap.test('POST /users/login', async (t) => { 
+// tap.test('POST /users/login', async (t) => {
 //     const response = await server.post('/users/login').send({
 //         email: mockUser.email,
 //         password: mockUser.password
@@ -96,6 +96,6 @@ tap.test('POST /users/signup with missing email', async (t) => {
 
 
 
-tap.teardown(() => {
-    process.exit(0);
-});
+// tap.teardown(() => {
+//     process.exit(0);
+// });
