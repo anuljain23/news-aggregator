@@ -114,19 +114,19 @@ tap.test('GET /users/preferences without token', async (t) => {
     t.end();
 });
 
-// tap.test('PUT /users/preferences', async (t) => {
-//     const response = await server.put('/users/preferences').set('Authorization', `Bearer ${token}`).send({
-//         preferences: ['movies', 'comics', 'games']
-//     });
-//     t.equal(response.status, 200);
-// });
+tap.test('PUT /users/preferences', async (t) => {
+    const response = await server.put('/users/preferences').set('Authorization', `Bearer ${token}`).send({
+        preferences: ['movies', 'comics', 'games']
+    });
+    t.equal(response.status, 200);
+});
 
-// tap.test('Check PUT /users/preferences', async (t) => {
-//     const response = await server.get('/users/preferences').set('Authorization', `Bearer ${token}`);
-//     t.equal(response.status, 200);
-//     t.same(response.body.preferences, ['movies', 'comics', 'games']);
-//     t.end();
-// });
+tap.test('Check PUT /users/preferences', async (t) => {
+    const response = await server.get('/users/preferences').set('Authorization', `Bearer ${token}`);
+    t.equal(response.status, 200);
+    t.same(response.body.preferences, ['movies', 'comics', 'games']);
+    t.end();
+});
 
 // // News tests
 

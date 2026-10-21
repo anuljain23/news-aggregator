@@ -69,7 +69,7 @@ const loginUser = async (email, password) => {
     }
 };
 
-//
+// Get user preferences
 const getUserPreferences = async (userId) => {
     try {
         // Find the user in the database by ID and select only the preferences field
@@ -86,4 +86,32 @@ const getUserPreferences = async (userId) => {
     }
 };
 
-module.exports = { registerUser, loginUser, getUserPreferences };
+// Update user preferences
+const updateUserPreferences = async (userId, preferences) => {
+    try {
+        // Find the user in the database by ID and update the preferences field
+        const updatedUser = await usersModel.findByIdAndUpdate(
+            userId,
+            { preferences },
+            { new: true } // Return the updated user object
+        );
+        // If the user is not found, throw an error
+        if (!updatedUser) {
+            throw new Error("User not found");
+        }
+        // Return the updated user object with the new preferences
+        return updatedUser;
+    }
+    // Handle any errors that occur during the update of user preferences
+    catch (error) {
+        console.error(error);
+        throw new Error(error.message);
+    }
+};
+
+module.exports = {
+    registerUser,
+    loginUser,
+    getUserPreferences,
+    updateUserPreferences,
+};

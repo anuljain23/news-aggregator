@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { registerUser, loginUser, getUserPreferences } = require("../controller/user.controller");
+const { registerUser, loginUser, getUserPreferences, updateUserPreferences } = require("../controller/user.controller");
 const {
     BadRequestErrorResponse,
     CreatedResponse,
@@ -97,6 +97,45 @@ router.get("/preferences", isAuthorized, async (req, res) => {
         // For other errors, return a generic error response
         return res.status(500).json(
             ErrorResponse('Error occurred while fetching user preferences'),
+        );
+    }
+});
+
+router.put("/preferences", isAuthorized, async (req, res) => {
+    const userId = req.decodedToken.id;
+    // Validate request body
+    if (!userId) {
+        return res.status(400).json(
+            BadRequestErrorResponse('User ID is required'),
+        );
+    }
+    // Validate preferences in request body
+    const { preferences } = req.body || {};
+    if (!preferences || !Array.isArray(preferences)) {
+        return res.status(400).json(
+            BadRequestErrorResponse('Invalid preferences format'),
+        );
+    }
+
+    // Call the updateUserPreferences function and handle the response
+    try {
+        const updatedUser = await updateUserPreferences(userId, preferences);
+        return res.status(200).json(
+            { preferences: updatedUser.preferences }
+        );
+    }
+    // Handle errors
+    catch (error) {
+        console.error(error);
+        // Check if the error is due to user not found
+        if (error.message === "User not found") {
+            return res.status(404).json(
+                ErrorResponse('User not found'),
+            );
+        }
+        // For other errors, return a generic error response
+        return res.status(500).json(
+            ErrorResponse('Error occurred while updating user preferences'),
         );
     }
 });
