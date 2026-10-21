@@ -7,6 +7,7 @@ const {
     ErrorResponse,
     DataResponse,
 } = require("../utils/response");
+const { isAuthorized } = require("../middleware/auth.middleware");
 
 // POST /users/signup route
 router.post("/signup", async (req, res) => {
@@ -64,6 +65,38 @@ router.post("/login", async (req, res) => {
         }
         return res.status(500).json(
             ErrorResponse('Error occurred while logging in'),
+        );
+    }
+});
+
+// GET /users/preferences route (protected)
+router.get("/preferences", isAuthorized, async (req, res) => {
+    // Implementation for fetching user preferences
+    const userId = req.decodedToken.id
+    if (!userId) {
+        return res.status(400).json(
+            BadRequestErrorResponse('User ID is required'),
+        );
+    }
+    // Call the getUserPreferences function and handle the response
+    try {
+        const user = await getUserPreferences(userId);
+        return res.status(200).json(
+            { preferences: user.preferences }
+        );
+    }
+    // Handle errors
+    catch (error) {
+        console.error(error);
+        // Check if the error is due to user not found
+        if (error.message === "User not found") {
+            return res.status(404).json(
+                ErrorResponse('User not found'),
+            );
+        }
+        // For other errors, return a generic error response
+        return res.status(500).json(
+            ErrorResponse('Error occurred while fetching user preferences'),
         );
     }
 });

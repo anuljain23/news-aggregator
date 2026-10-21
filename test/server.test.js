@@ -98,21 +98,21 @@ tap.test('POST /users/login with wrong password', async (t) => {
     t.end();
 });
 
-// // Preferences tests
+// Preferences tests
 
-// tap.test('GET /users/preferences', async (t) => {
-//     const response = await server.get('/users/preferences').set('Authorization', `Bearer ${token}`);
-//     t.equal(response.status, 200);
-//     t.hasOwnProp(response.body, 'preferences');
-//     t.same(response.body.preferences, mockUser.preferences);
-//     t.end();
-// });
+tap.test('GET /users/preferences', async (t) => {
+    const response = await server.get('/users/preferences').set('Authorization', `Bearer ${token}`);
+    t.equal(response.status, 200);
+    t.hasOwnProp(response.body, 'preferences');
+    t.same(response.body.preferences, mockUser.preferences);
+    t.end();
+});
 
-// tap.test('GET /users/preferences without token', async (t) => {
-//     const response = await server.get('/users/preferences');
-//     t.equal(response.status, 401);
-//     t.end();
-// });
+tap.test('GET /users/preferences without token', async (t) => {
+    const response = await server.get('/users/preferences');
+    t.equal(response.status, 401);
+    t.end();
+});
 
 // tap.test('PUT /users/preferences', async (t) => {
 //     const response = await server.put('/users/preferences').set('Authorization', `Bearer ${token}`).send({
