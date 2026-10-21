@@ -17,7 +17,7 @@ router.post("/signup", async (req, res) => {
 
     try {
         const dbUser = await registerUser(user);
-        return res.status(201).json(CreatedResponse(dbUser));
+        return res.status(200).json(CreatedResponse(dbUser));
     } catch (error) {
         console.error(error);
         if (error.message === "Email already exists") {

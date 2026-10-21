@@ -4,7 +4,6 @@ const { config } = require('dotenv');
 config();
 
 const express = require('express');
-const mongoose = require('mongoose');
 
 const { logger } = require('./middleware/logger');
 const { userRoutes } = require('./routes/user.routes');
@@ -27,14 +26,5 @@ app.get('/', (req, res) => {    // health check route
         message: 'Server is working'
     });
 });
-
-// Connect to MongoDB and start the server
-mongoose.connect(process.env.MONGODB_URI)
-    .then(() => {   // Successful connection
-        console.log("Connected to MongoDB");
-    }).catch((error) => {   // Error connecting to MongoDB
-        console.error('Failed to connect to MongoDB:', error);
-        process.exitCode = 1;
-    });
 
 module.exports = app;
