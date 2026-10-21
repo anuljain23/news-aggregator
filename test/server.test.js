@@ -78,25 +78,25 @@ tap.test('POST /users/signup with missing email', async (t) => {
     t.end();
 });
 
-// tap.test('POST /users/login', async (t) => {
-//     const response = await server.post('/users/login').send({
-//         email: mockUser.email,
-//         password: mockUser.password
-//     });
-//     t.equal(response.status, 200);
-//     t.hasOwnProp(response.body, 'token');
-//     token = response.body.token;
-//     t.end();
-// });
+tap.test('POST /users/login', async (t) => {
+    const response = await server.post('/users/login').send({
+        email: mockUser.email,
+        password: mockUser.password
+    });
+    t.equal(response.status, 200);
+    t.hasOwnProp(response.body, 'token');
+    token = response.body.token;
+    t.end();
+});
 
-// tap.test('POST /users/login with wrong password', async (t) => {
-//     const response = await server.post('/users/login').send({
-//         email: mockUser.email,
-//         password: 'wrongpassword'
-//     });
-//     t.equal(response.status, 401);
-//     t.end();
-// });
+tap.test('POST /users/login with wrong password', async (t) => {
+    const response = await server.post('/users/login').send({
+        email: mockUser.email,
+        password: 'wrongpassword'
+    });
+    t.equal(response.status, 401);
+    t.end();
+});
 
 // // Preferences tests
 

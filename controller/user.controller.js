@@ -39,29 +39,58 @@ const registerUser = async (user) => {
 };
 
 const loginUser = async (email, password) => {
-    const body = {
-        email: email
-    };
-    const dbUser = await usersModel.findOne(body);
-    if (!dbUser) {
-        throw new Error("User not found");
+    try {
+        // Find the user in the database by email
+        const dbUser = await usersModel.findOne({ email: email });
+        if (!dbUser) {
+            throw new Error("User not found");
+        }
+
+        // Compare the provided password with the hashed password stored in the database
+        const isSamePassword = bcrypt.compareSync(password, dbUser.password);
+        if (!isSamePassword) {
+            throw new Error("Invalid Password");
+        }
+
+        // Create a payload for the JWT token with the user's ID and role
+        const payload = {
+            id: dbUser._id,
+            role: dbUser.role
+        };
+
+        // Generate a JWT token with the payload and a secret key, set to expire in 1 hour
+        const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
+        return { token };
     }
-    const isSamePassword = bcrypt.compareSync(password, dbUser.password);
-
-    const payload = {
-        id: dbUser._id,
-        role: dbUser.role
+    catch (error) {
+        throw new Error(error.message);
     }
+};
 
-    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' })
+// const loginUser = async (email, password) => {
+//     const body = {
+//         email: email
+//     };
+//     const dbUser = await usersModel.findOne(body);
+//     if (!dbUser) {
+//         throw new Error("User not found");
+//     }
+//     const isSamePassword = bcrypt.compareSync(password, dbUser.password);
 
-    if (!isSamePassword) {
-        throw new Error("Invalid Password");
-    }
+//     const payload = {
+//         id: dbUser._id,
+//         role: dbUser.role
+//     }
+
+//     const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' })
+
+//     if (!isSamePassword) {
+//         throw new Error("Invalid Password");
+//     }
 
 
-    return { status: "ok", token };
-}
+//     return { status: "ok", token };
+// }
 
 
 module.exports = { registerUser, loginUser };

@@ -1,5 +1,5 @@
 const buildResponse = (data = {}) => ({
-    content: { items: data },
+    data,
 });
 
 const buildErrorResponse = (message) => ({
