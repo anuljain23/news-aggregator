@@ -5,7 +5,6 @@ const {
     BadRequestErrorResponse,
     CreatedResponse,
     ErrorResponse,
-    DataResponse,
 } = require("../utils/response");
 const { isAuthorized } = require("../middleware/auth.middleware");
 

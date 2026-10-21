@@ -128,20 +128,20 @@ tap.test('Check PUT /users/preferences', async (t) => {
     t.end();
 });
 
-// // News tests
+// News tests
 
-// tap.test('GET /news', async (t) => {
-//     const response = await server.get('/news').set('Authorization', `Bearer ${token}`);
-//     t.equal(response.status, 200);
-//     t.hasOwnProp(response.body, 'news');
-//     t.end();
-// });
+tap.test('GET /news', async (t) => {
+    const response = await server.get('/news').set('Authorization', `Bearer ${token}`);
+    t.equal(response.status, 200);
+    t.hasOwnProp(response.body, 'news');
+    t.end();
+});
 
-// tap.test('GET /news without token', async (t) => {
-//     const response = await server.get('/news');
-//     t.equal(response.status, 401);
-//     t.end();
-// });
+tap.test('GET /news without token', async (t) => {
+    const response = await server.get('/news');
+    t.equal(response.status, 401);
+    t.end();
+});
 
 
 
