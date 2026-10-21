@@ -1,33 +1,37 @@
-const jwt = require('jsonwebtoken');
-const { ErrorResponse } = require('../utils/response');
+const jwt = require("jsonwebtoken");
+const { ErrorResponse } = require("../utils/response");
 
-// Middleware to check if the user is authorized
 const isAuthorized = (req, res, next) => {
-    // Get the token from the request headers
-    const token = req.headers.authorization;
-
-    // Check if the token is present
-    if (!token) {
+    // Check if the Authorization header is present
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
         return res.status(401).json(
             ErrorResponse('No token provided')
         );
     }
-
-    // Verify the token
-    let decodedToken;
-    try {
-        decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-    }
-    // Handle invalid token
-    catch (e) {
+    // Split the Authorization header into scheme and token
+    const [scheme, token] = authHeader.split(' ');
+    if (scheme !== 'Bearer' || !token) {
         return res.status(401).json(
             ErrorResponse('Invalid Token')
         );
     }
-    // Attach the decoded token to the request object for further use
-    req.decodedToken = decodedToken;
-    // Call the next middleware or route handler
-    next();
-}
 
-module.exports = { isAuthorized }
+    // Verify the JWT token using the secret key
+    try {
+        // If the token is valid, attach the decoded token to the request object and call next() to proceed to the next middleware or route handler
+        req.decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+        // Proceed to the next middleware or route handler
+        next();
+    }
+    // Handle any errors that occur during token verification
+    catch (error) {
+        return res.status(401).json(
+            ErrorResponse('Invalid Token')
+        );
+    }
+};
+
+module.exports = {
+    isAuthorized
+};
