@@ -79,7 +79,7 @@ Create a `.env` file in the project root. Do not commit this file.
 
 ```env
 PORT=3000
-MONGODB_URI=mongodb://127.0.0.1:27017/news_aggregator
+MONGODB_URI=your_mongodb_uri
 JWT_SECRET=replace_this_with_a_long_random_secret
 NEWS_API_KEY=your_newsapi_key
 ```
@@ -96,8 +96,7 @@ The current `.gitignore` excludes `.env` and `.env.test`. Keep real credentials 
 Create a `.env.test` file in the project root:
 
 ```env
-MONGODB_TEST_URI=mongodb://127.0.0.1:27017/news_aggregator_test
-JWT_SECRET=replace_this_with_a_test_secret
+MONGODB_TEST_URI=your_mongodb_test_uri
 ```
 
 Use a dedicated database whose name ends in `test` (for example, `news_aggregator_test`). The test setup checks this suffix and deletes documents from collections in that test database before running tests. **Never point `MONGODB_TEST_URI` at a development or production database.**
@@ -135,6 +134,8 @@ Run the test suite:
 
 ```bash
 npm test
+or
+npm run test
 ```
 
 The current test command uses TAP, loads `test-support/mongo-setup.cjs`, and runs files matching `test/*.js` serially. The tests connect to the MongoDB database specified by `MONGODB_TEST_URI` in `.env.test`.
