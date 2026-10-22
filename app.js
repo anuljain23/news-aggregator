@@ -19,7 +19,7 @@ app.use(express.urlencoded({ extended: true }));    // parse application/x-www-f
 
 // routes
 app.use('/users', userRoutes);   // user routes
-// app.use('/news', newsRoutes);     // news routes
+app.use('/news', newsRoutes);     // news routes
 app.get('/', (req, res) => {    // health check route
     res.status(200).json({
         status: 'Ok',
