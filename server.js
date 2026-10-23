@@ -10,7 +10,7 @@ mongoose.connect(process.env.MONGODB_URI)
         console.log("Connected to MongoDB");
         app.listen(PORT, (err, data) => {   // Start the server
             if (err) {  // Error starting the server
-                console.error('Failed to start server:', error);
+                console.error('Failed to start server:', err);
                 process.exitCode = 1;
             } else {    // Server started successfully
                 console.log(`Server is listening on ${PORT}`);

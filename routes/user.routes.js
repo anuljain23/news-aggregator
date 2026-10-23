@@ -26,6 +26,12 @@ router.post("/signup", async (req, res) => {
     // Handle errors
     catch (error) {
         console.error(error);
+        if (error.name === 'ValidationError') {
+            const message = Object.values(error.errors)
+                .map((validationError) => validationError.message)
+                .join(', ');
+            return res.status(400).json(BadRequestErrorResponse(message));
+        }
         // Check if the error is due to email already existing
         if (error.message === "Email already exists") {
             return res.status(409).json(BadRequestErrorResponse(error.message));
@@ -40,7 +46,7 @@ router.post("/signup", async (req, res) => {
 // POST /users/login route
 router.post("/login", async (req, res) => {
     // Validate request body
-    const { email, password } = req.body;
+    const { email, password } = req.body || {};
     if (!email || !password) {
         return res.status(400).json(
             BadRequestErrorResponse('Missing required fields: email, password'),
@@ -57,6 +63,12 @@ router.post("/login", async (req, res) => {
     // Handle errors
     catch (error) {
         console.error(error);
+        if (error.name === 'ValidationError') {
+            const message = Object.values(error.errors)
+                .map((validationError) => validationError.message)
+                .join(', ');
+            return res.status(400).json(BadRequestErrorResponse(message));
+        }
         if (error.message === "User not found" || error.message === "Invalid Password") {
             return res.status(401).json(
                 ErrorResponse('Invalid email or password'),

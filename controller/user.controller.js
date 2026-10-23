@@ -6,18 +6,20 @@ const usersModel = require("../model/user.model");
 
 // Register a new user
 const registerUser = async (user) => {
-    // Generate a salt for password hashing
-    const salt = bcrypt.genSaltSync(SALT_ROUNDS);
-    // Hash the user's password using the generated salt
-    const hashedPassword = await bcrypt.hash(user.password, salt);
-
-    // Create a new user object with the provided user data and hashed password
     const newUser = new usersModel({
         name: user.name,
         email: user.email,
-        password: hashedPassword,
-        preferences: user.preferences || [] // Set preferences to an empty array if not provided
+        password: user.password,
+        preferences: user.preferences || []
     });
+
+    await newUser.validate();
+
+    // Generate a salt for password hashing
+    const salt = await bcrypt.genSalt(SALT_ROUNDS);
+    // Hash the user's password using the generated salt
+    const hashedPassword = await bcrypt.hash(user.password, salt);
+    newUser.password = hashedPassword;
 
     // Save the new user to the database and return the saved user object
     try {
@@ -35,6 +37,9 @@ const registerUser = async (user) => {
         if (error.code === 11000) {
             throw new Error("Email already exists", error);
         }
+        if (error.name === 'ValidationError') {
+            throw error;
+        }
         throw new Error("Error occurred while registering user");
     }
 };
@@ -42,6 +47,12 @@ const registerUser = async (user) => {
 // Login an existing user
 const loginUser = async (email, password) => {
     try {
+        const input = new usersModel({ email, password });
+        const validationError = input.validateSync(['email', 'password']);
+        if (validationError) {
+            throw validationError;
+        }
+
         // Find the user in the database by email
         const dbUser = await usersModel.findOne({ email: email });
         if (!dbUser) {
@@ -49,7 +60,7 @@ const loginUser = async (email, password) => {
         }
 
         // Compare the provided password with the hashed password stored in the database
-        const isSamePassword = bcrypt.compareSync(password, dbUser.password);
+        const isSamePassword = await bcrypt.compare(password, dbUser.password);
         if (!isSamePassword) {
             throw new Error("Invalid Password");
         }
@@ -65,6 +76,9 @@ const loginUser = async (email, password) => {
         return { token };
     }
     catch (error) {
+        if (error.name === 'ValidationError') {
+            throw error;
+        }
         throw new Error(error.message);
     }
 };
@@ -100,6 +114,7 @@ const updateUserPreferences = async (userId, preferences) => {
             throw new Error("User not found");
         }
         // Return the updated user object with the new preferences
+        delete updatedUser.password;
         return updatedUser;
     }
     // Handle any errors that occur during the update of user preferences
